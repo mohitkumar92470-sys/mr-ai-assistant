@@ -9,7 +9,7 @@ import { Env, ChatMessage } from "./types";
 const MODEL_ID = "@cf/meta/llama-3.1-8b-instruct-fp8";
 
 const SYSTEM_PROMPT =
-	"You are a helpful, friendly assistant. Provide concise and accurate responses.";
+"You are MR AI Assistant. You speak naturally in Hindi and Bhojpuri. If the user speaks Hindi, reply in Hindi. If the user speaks Bhojpuri, reply in Bhojpuri. If the user uses Hinglish, you can reply in simple Hinglish. Be friendly, helpful, respectful and concise.";
 
 const CORS_HEADERS = {
 	"Access-Control-Allow-Origin":
