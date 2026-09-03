@@ -228,13 +228,9 @@ function consumeSseEvents(buffer) {
 	}
 	return { events, buffer: normalized };
 }
-// =========================
 // MR FULL VOICE ASSISTANT 🎤🔊
-// =========================
-
 let mrVoiceRecognition = null;
 let mrVoiceListening = false;
-
 function mrSpeak(text) {
   if (!("speechSynthesis" in window)) return;
 
@@ -247,12 +243,10 @@ function mrSpeak(text) {
 
   window.speechSynthesis.speak(speech);
 }
-
 function createMRVoiceButton() {
   if (document.getElementById("mr-voice-button")) return;
 
   const button = document.createElement("button");
-
   button.id = "mr-voice-button";
   button.textContent = "🎤 बोलो";
 
@@ -274,7 +268,6 @@ function createMRVoiceButton() {
 
   document.body.appendChild(button);
 }
-
 function startMRVoice() {
   const SpeechRecognition =
     window.SpeechRecognition ||
@@ -290,14 +283,12 @@ function startMRVoice() {
   mrVoiceListening = true;
 
   const button = document.getElementById("mr-voice-button");
-
   if (button) {
     button.textContent = "🔴 सुन रहा हूँ...";
     button.style.background = "#dc2626";
   }
 
   mrVoiceRecognition = new SpeechRecognition();
-
   mrVoiceRecognition.lang = "hi-IN";
   mrVoiceRecognition.continuous = false;
   mrVoiceRecognition.interimResults = false;
@@ -335,8 +326,6 @@ function startMRVoice() {
     mrVoiceListening = false;
   }
 }
-
-// AI जवाब को आवाज़ में बोलना
 const mrOriginalAddMessage = addMessageToChat;
 
 addMessageToChat = function (role, content) {
