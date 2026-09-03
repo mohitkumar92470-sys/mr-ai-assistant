@@ -228,3 +228,125 @@ function consumeSseEvents(buffer) {
 	}
 	return { events, buffer: normalized };
 }
+// =========================
+// MR FULL VOICE ASSISTANT 🎤🔊
+// =========================
+
+let mrVoiceRecognition = null;
+let mrVoiceListening = false;
+
+function mrSpeak(text) {
+  if (!("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "hi-IN";
+  speech.rate = 0.9;
+  speech.pitch = 1;
+
+  window.speechSynthesis.speak(speech);
+}
+
+function createMRVoiceButton() {
+  if (document.getElementById("mr-voice-button")) return;
+
+  const button = document.createElement("button");
+
+  button.id = "mr-voice-button";
+  button.textContent = "🎤 बोलो";
+
+  button.style.position = "fixed";
+  button.style.bottom = "80px";
+  button.style.right = "15px";
+  button.style.zIndex = "9999";
+  button.style.padding = "12px 18px";
+  button.style.border = "none";
+  button.style.borderRadius = "25px";
+  button.style.background = "#2563eb";
+  button.style.color = "white";
+  button.style.fontSize = "16px";
+  button.style.fontWeight = "bold";
+
+  button.onclick = function () {
+    startMRVoice();
+  };
+
+  document.body.appendChild(button);
+}
+
+function startMRVoice() {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert("इस फोन में Voice Recognition supported नहीं है।");
+    return;
+  }
+
+  if (mrVoiceListening) return;
+
+  mrVoiceListening = true;
+
+  const button = document.getElementById("mr-voice-button");
+
+  if (button) {
+    button.textContent = "🔴 सुन रहा हूँ...";
+    button.style.background = "#dc2626";
+  }
+
+  mrVoiceRecognition = new SpeechRecognition();
+
+  mrVoiceRecognition.lang = "hi-IN";
+  mrVoiceRecognition.continuous = false;
+  mrVoiceRecognition.interimResults = false;
+
+  mrVoiceRecognition.onresult = function (event) {
+    const text =
+      event.results[0][0].transcript.trim();
+
+    if (userInput) {
+      userInput.value = text;
+      userInput.dispatchEvent(new Event("input"));
+
+      setTimeout(() => {
+        sendButton.click();
+      }, 300);
+    }
+  };
+
+  mrVoiceRecognition.onerror = function (event) {
+    console.log("Voice error:", event.error);
+  };
+
+  mrVoiceRecognition.onend = function () {
+    mrVoiceListening = false;
+
+    if (button) {
+      button.textContent = "🎤 बोलो";
+      button.style.background = "#2563eb";
+    }
+  };
+
+  try {
+    mrVoiceRecognition.start();
+  } catch (error) {
+    mrVoiceListening = false;
+  }
+}
+
+// AI जवाब को आवाज़ में बोलना
+const mrOriginalAddMessage = addMessageToChat;
+
+addMessageToChat = function (role, content) {
+  mrOriginalAddMessage(role, content);
+
+  if (role === "assistant" && content) {
+    mrSpeak(content);
+  }
+};
+
+window.addEventListener("load", function () {
+  createMRVoiceButton();
+});
